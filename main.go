@@ -1,25 +1,49 @@
 package main
 
-import "fmt"
-
 type person struct {
 	first string
 }
 
-func (p person) speak() {
-	fmt.Println(p.first)
+type mongo map[int]person
+type postg map[int]person
+
+func (m mongo) save(n int, p person) {
+	m[n] = p
 }
 
-//an interace says
+func (m mongo) retrieve(n int) person {
+	return m[n]
+}
+func (pg postg) save(n int, p person) {
+	pg[n] = p
+}
 
-type human interface {
-	speak()
+func (pg postg) retrieve(n int) person {
+	return pg[n]
+}
+
+type accessor interface {
+	save(n int, p person)
+	retrieve(a int) person
+}
+
+func put(a accessor, n int, p person) {
+	a.save(n, p)
+}
+func get(a accessor, n int) person {
+	return a.retrieve(n)
 }
 
 func main() {
+	dbm := mongo{}
+	dbp := postg{}
+
 	p := person{
-		first: "ake",
+		first: "Ralph",
 	}
 
-	fmt.Printf("%T\n", p)
+	put(dbm, 1, p)
+
+	get(dbp, 2)
+
 }
